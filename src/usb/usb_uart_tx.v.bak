@@ -26,42 +26,33 @@ assign txIdleOUT  = txReadyOUT & (~txCounter[0]);
 assign txOUT      = txReg[0];
 
 always @(posedge clockIN) begin : tx_clock_generate
-
-	if(txIdleOUT & (~txLoadIN)) 
-	begin
+	if(txIdleOUT & (~txLoadIN)) begin
 		txClkCounter <= 0;
 		txBaudClk    <= 1'b0;
 	end
-	else if(txClkCounter == 0) 
-	begin
+	else if(txClkCounter == 0) begin
 		txClkCounter <= HALF_BAUD_CLK_REG_VALUE;
 		txBaudClk    <= ~txBaudClk;
 	end
-	else 
-		begin
-			txClkCounter <= txClkCounter - 1'b1;
-		end
+	else begin
+		txClkCounter <= txClkCounter - 1'b1;
+	end
 end
 
 always @(posedge txBaudClk or negedge nTxResetIN) begin : tx_transmit
-	
-	if(~nTxResetIN) 
-	begin
+	if(~nTxResetIN) begin
 		txCounter <= 4'h0;
 		txReg[0]  <= 1'b1;
 	end
-	else if(~txReadyOUT) 
-	begin
+	else if(~txReadyOUT) begin
 		txReg     <= {1'b0, txReg[9:1]};
 		txCounter <= txCounter - 1'b1;
 	end
-	else if(txLoadIN) 
-	begin
+	else if(txLoadIN) begin
 		txReg     <= {1'b1, txDataIN[7:0], 1'b0};
 		txCounter <= 4'hA;
 	end
-	else 
-	begin
+	else begin
 		txCounter <= 4'h0;
 	end
 end
