@@ -20,10 +20,14 @@ module fpga_project
 	
 	//7-segment indicators
 	output [3 : 0] num_indics,
-	output [7 : 0] seven_seg_indics
+	output [7 : 0] seven_seg_indics,
 	
 	//signal
 	//output reg signal = 1'b1,
+	
+	//uart
+	output uart_tx,
+	output uart_rx
 );
 //
 reg [28 : 0] button_counter = 29'h0;
@@ -76,6 +80,19 @@ buttons buttons(
 .clk(clk_50),
 .num_button(buttons_num),
 .num_led(leds)
+);
+
+uart_usb uart_usb(
+.clockIN(clk_50),
+.nTxResetIN(reset),
+.txDataIN(),
+.txLoadIN(),
+
+.nRxResetIN(),
+.rxIN(), 
+.rxIdleOUT(),
+.rxReadyOUT(),
+.rxDataOUT()
 );
 
 endmodule
