@@ -6,6 +6,9 @@ module fpga_project
 	//buttons
 	input [3 : 0] buttons_num,
 	
+	//ir
+	input ir_receiv,
+	
 	//leds
 	output [3 : 0] leds, //инверсия
 	
@@ -28,6 +31,7 @@ module fpga_project
 	//uart
 	output uart_tx,
 	output uart_rx
+	
 );
 //
 reg [28 : 0] button_counter = 29'h0;
@@ -80,6 +84,17 @@ buttons buttons(
 .clk(clk_50),
 .num_button(buttons_num),
 .num_led(leds)
+);
+
+reg [7 : 0] ir_cmd;
+reg ir_cmd_ready;
+
+ir_receiver ir_receiver(
+.clk(clk_50),
+.reset(reset),
+.ir_input(ir_receiv),
+.ir_cmd(ir_cmd),
+.ir_cmd_ready(ir_cmd_ready)
 );
 
 uart_usb uart_usb(
